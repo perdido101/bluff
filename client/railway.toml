@@ -3,9 +3,7 @@ builder = "nixpacks"
 buildCommand = "npm install && npm run build"
 
 [deploy]
+numReplicas = 1
 startCommand = "npx serve -s build"
-healthcheckPath = "/"
-healthcheckTimeout = 100
-
-[nixpacks]
-node-version = "18" 
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10 
