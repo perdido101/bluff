@@ -3,13 +3,9 @@ builder = "nixpacks"
 buildCommand = "npm install && npm run build"
 
 [deploy]
-startCommand = "npm run serve"
+startCommand = "npx serve -s build"
 healthcheckPath = "/"
 healthcheckTimeout = 100
-restartPolicyType = "on_failure"
-
-[phases]
-setup = { nixPkgs = ["nodejs-18_x", "npm-9_x"] }
 
 [nixpacks]
 node-version = "18" 
