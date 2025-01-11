@@ -27,6 +27,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 // Add error handling middleware
 app.use((err: Error, req: any, res: any, next: any) => {
   console.error('Error:', err);
