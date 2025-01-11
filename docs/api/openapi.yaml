@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Bluff AI Game API
+  description: API documentation for the Bluff AI card game
+  version: 1.0.0
+  contact:
+    name: Development Team
+    url: https://github.com/{username}/{repository-name}
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+  - url: https://api.bluff-ai-game.com
+    description: Production server
+
+tags:
+  - name: Game
+    description: Game management endpoints
+  - name: Player
+    description: Player-related operations
+  - name: WebSocket
+    description: Real-time game events
+
+paths:
+  /api/game:
+    post:
+      summary: Start a new game
+      tags: [Game]
+      responses:
+        '201':
+          description: Game created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Get current game state
+      tags: [Game]
+      responses:
+        '200':
+          description: Current game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/game/move:
+    post:
+      summary: Make a game move
+      tags: [Game]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameAction'
+      responses:
+        '200':
+          description: Move processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        '400':
+          description: Invalid move
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Card:
+      type: object
+      required:
+        - suit
+        - value
+      properties:
+        suit:
+          type: string
+          enum: [hearts, diamonds, clubs, spades]
+        value:
+          type: string
+          enum: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+
+    Player:
+      type: object
+      required:
+        - id
+        - hand
+        - isAI
+      properties:
+        id:
+          type: string
+        hand:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        isAI:
+          type: boolean
+
+    GameState:
+      type: object
+      required:
+        - players
+        - currentPlayer
+        - gameStatus
+      properties:
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        currentPlayer:
+          type: string
+        pile:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        lastMove:
+          $ref: '#/components/schemas/GameAction'
+        gameStatus:
+          type: string
+          enum: [waiting, playing, finished]
+        winner:
+          type: string
+
+    GameAction:
+      type: object
+      required:
+        - type
+        - playerId
+      properties:
+        type:
+          type: string
+          enum: [PLAY_CARDS, CHALLENGE, PASS]
+        playerId:
+          type: string
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        declaredValue:
+          type: string
+          enum: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object 
