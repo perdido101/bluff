@@ -12,6 +12,8 @@ import { PersistenceService } from './services/persistenceService';
 import { MLIntegrationService } from './services/mlIntegrationService';
 import { ModelMonitoringService } from './services/modelMonitoringService';
 import { PerformanceMetricsService } from './services/performanceMetricsService';
+import { ReinforcementLearningService } from './services/reinforcementLearningService';
+import { AdaptiveDifficultyService } from './services/adaptiveDifficultyService';
 
 dotenv.config();
 
@@ -56,6 +58,8 @@ async function initializeServer() {
   const patternRecognition = new PatternRecognitionService(persistenceService);
   const adaptiveLearning = new AdaptiveLearningService(persistenceService);
   const modelMonitoring = new ModelMonitoringService(persistenceService);
+  const reinforcementLearning = new ReinforcementLearningService(persistenceService);
+  const adaptiveDifficulty = new AdaptiveDifficultyService(persistenceService);
   performanceMetrics = new PerformanceMetricsService(persistenceService);
 
   // Initialize ML Integration
@@ -64,7 +68,9 @@ async function initializeServer() {
     patternRecognition,
     adaptiveLearning,
     aiPersonality,
-    modelMonitoring
+    modelMonitoring,
+    reinforcementLearning,
+    adaptiveDifficulty
   );
 
   // Game routes
