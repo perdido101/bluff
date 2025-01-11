@@ -1,11 +1,17 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm install && npm run build"
 
 [deploy]
 startCommand = "npm start"
-healthcheckPath = "/health"
-healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
 
 [nixpacks]
-node-version = "18" 
+node-version = "18"
+
+[service.backend]
+directory = "server"
+name = "backend"
+
+[service.frontend]
+directory = "client"
+name = "frontend" 
